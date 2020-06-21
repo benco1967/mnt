@@ -1,23 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useEffect, useState} from 'react';
 import './App.css';
+import {generateMap} from "./map";
+import {Map2D} from './Map2D';
+import {Map3D} from "./Map3D";
 
 function App() {
+  const [map, setMap] = useState([0, 0, 0, 0]);
+  useEffect(() => {
+    let interval = setInterval(() => {
+      const newMap = generateMap(map);
+      if (newMap === map) {
+        clearInterval(interval);
+        interval = null;
+      } else {
+        setMap(newMap);
+      }
+    }, 1000);
+    return () => {
+      if(interval) clearInterval(interval);
+    };
+  });
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <Map2D map={map}/>
+        <Map3D/>
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
       </header>
     </div>
   );
